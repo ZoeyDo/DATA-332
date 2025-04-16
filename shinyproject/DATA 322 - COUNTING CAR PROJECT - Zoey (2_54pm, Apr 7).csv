@@ -1,0 +1,76 @@
+Primary Key,Student,date,mph,brand,vehicle_style,hr:min,if they slow down (YES/ NO)
+1,Zoey Do,4/7/2025,10,ford,suv,14:54,no
+2,Zoey Do,4/7/2025,20,ford,suv,14:54,no
+3,Zoey Do,4/7/2025,14,ford,suv,14:55,no
+4,Zoey Do,4/7/2025,28,ford,suv,14:55,no
+5,Zoey Do,4/7/2025,25,ford,pickup truck,14:56,no
+6,Zoey Do,4/7/2025,16,kia,sedan,14:57,no
+7,Zoey Do,4/7/2025,25,ford,suv,14:57,no
+8,Zoey Do,4/7/2025,31,gmc,pickup truck,14:58,no
+9,Zoey Do,4/7/2025,31,chevrolet,suv,14:58,no
+10,Zoey Do,4/7/2025,16,chevrolet,suv,14:59,no
+11,Zoey Do,4/7/2025,25,jeep,suv,14:59,no
+12,Zoey Do,4/7/2025,12,tesla,suv,15:00,no
+13,Zoey Do,4/7/2025,12,honda,suv,15:00,no
+14,Zoey Do,4/7/2025,30,mazda,sedan,15:00,no
+15,Zoey Do,4/7/2025,30,chevrolet,suv,15:01,no
+16,Zoey Do,4/7/2025,29,chevrolet,suv,15:01,no
+17,Zoey Do,4/7/2025,34,honda,suv,15:02,no
+18,Zoey Do,4/7/2025,25,ford,suv,15:02,no
+19,Zoey Do,4/7/2025,25,chevrolet,pickup truck,15:03,no
+20,Zoey Do,4/7/2025,33,chevrolet,suv,15:03,no
+21,Zoey Do,4/7/2025,31,chevrolet,pickup truck,15:04,no
+22,Zoey Do,4/7/2025,29,chevrolet,pickup truck,15:04,no
+23,Zoey Do,4/7/2025,33,chevrolet,sedan,15:04,no
+24,Zoey Do,4/7/2025,19,chevrolet,suv,15:05,no
+25,Zoey Do,4/7/2025,32,gmc,suv,15:05,no
+26,Zoey Do,4/14/2025,19,kia,sedan,17:49,no
+27,Zoey Do,4/14/2025,26,chevrolet,suv,17:49,no
+28,Zoey Do,4/14/2025,14,mazda,sedan,17:50,no
+29,Zoey Do,4/14/2025,22,honda,suv,17:50,no
+30,Zoey Do,4/14/2025,17,tesla,suv,17:51,no
+31,Zoey Do,4/14/2025,29,gmc,pickup truck,17:52,no
+32,Zoey Do,4/14/2025,33,jeep,suv,17:52,no
+33,Zoey Do,4/14/2025,12,kia,suv,17:53,no
+34,Zoey Do,4/14/2025,27,ford,pickup truck,17:53,no
+35,Zoey Do,4/14/2025,25,ford,suv,17:54,no
+36,Zoey Do,4/14/2025,18,honda,suv,17:55,no
+37,Zoey Do,4/14/2025,31,mazda,sedan,17:55,no
+38,Zoey Do,4/14/2025,24,chevrolet,suv,17:56,no
+39,Zoey Do,4/14/2025,16,ford,suv,17:56,no
+40,Zoey Do,4/14/2025,22,gmc,pickup truck,17:57,no
+41,Zoey Do,4/14/2025,13,jeep,suv,17:57,no
+42,Zoey Do,4/14/2025,30,tesla,suv,17:58,no
+43,Zoey Do,4/14/2025,21,kia,suv,17:59,no
+44,Zoey Do,4/14/2025,25,ford,suv,17:59,no
+45,Zoey Do,4/14/2025,19,honda,suv,18:00,no
+46,Zoey Do,4/14/2025,27,mazda,sedan,18:00,no
+47,Zoey Do,4/14/2025,23,jeep,suv,18:01,no
+48,Zoey Do,4/14/2025,31,gmc,pickup truck,18:01,no
+49,Zoey Do,4/14/2025,28,kia,suv,18:02,no
+50,Zoey Do,4/14/2025,20,chevrolet,suv,18:02,no
+51,Zoey Do,4/14/2025,16,ford,suv,18:03,no
+52,Zoey Do,4/14/2025,35,ford,pickup truck,18:04,no
+53,Zoey Do,4/14/2025,18,tesla,suv,18:04,no
+54,Zoey Do,4/14/2025,22,honda,suv,18:05,no
+55,Zoey Do,4/14/2025,24,chevrolet,suv,18:05,no
+56,Zoey Do,4/14/2025,29,kia,sedan,18:06,no
+57,Zoey Do,4/14/2025,13,mazda,sedan,18:06,no
+58,Zoey Do,4/14/2025,21,ford,suv,18:07,no
+59,Zoey Do,4/14/2025,34,jeep,suv,18:07,no
+60,Zoey Do,4/14/2025,32,tesla,suv,18:08,no
+61,Zoey Do,4/14/2025,15,gmc,pickup truck,18:08,no
+62,Zoey Do,4/14/2025,17,ford,suv,18:09,no
+63,Zoey Do,4/14/2025,26,chevrolet,suv,18:10,no
+64,Zoey Do,4/14/2025,18,honda,suv,18:10,no
+65,Zoey Do,4/14/2025,30,kia,sedan,18:11,no
+66,Zoey Do,4/14/2025,14,mazda,sedan,18:11,no
+67,Zoey Do,4/14/2025,33,ford,pickup truck,18:12,no
+68,Zoey Do,4/14/2025,19,gmc,pickup truck,18:12,no
+69,Zoey Do,4/14/2025,22,jeep,suv,18:13,no
+70,Zoey Do,4/14/2025,16,chevrolet,suv,18:13,no
+71,Zoey Do,4/14/2025,24,honda,suv,18:14,no
+72,Zoey Do,4/14/2025,27,kia,suv,18:14,no
+73,Zoey Do,4/14/2025,28,ford,suv,18:15,no
+74,Zoey Do,4/14/2025,31,tesla,suv,18:15,no
+75,Zoey Do,4/14/2025,20,mazda,sedan,18:16,no
