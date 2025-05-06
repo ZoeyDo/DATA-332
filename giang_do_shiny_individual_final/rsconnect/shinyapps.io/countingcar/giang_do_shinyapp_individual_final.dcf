@@ -1,0 +1,12 @@
+name: giang_do_shinyapp_individual_final
+title: giang_do_shinyapp_individual_final
+username: countingcar
+account: countingcar
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14692122
+bundleId: 10235970
+url: https://countingcar.shinyapps.io/giang_do_shinyapp_individual_final/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
