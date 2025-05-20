@@ -377,3 +377,69 @@ ui <- navbarPage("Nursing Home Industry Research",
                           )
                  )
 )
+
+server <- function(input, output, tab) {
+  
+  #filtered_data <- reactive({
+  # dataset %>%
+  #  filter(as.character(state) == input$selected_state)
+  #})
+  
+  filtered_data <- reactive({
+    if(input$selected_state == "All") {
+      dataset
+    } else {
+      dataset %>% filter(as.character(state) == as.character(input$selected_state))
+    }
+  })
+  
+  filtered_year <- reactive({
+
+    if(input$selected_year == "All") {
+      dataset  # Return all data when "All" is selected
+    } else {
+      dataset %>% filter(as.numeric(year) == as.numeric(input$selected_year))
+    }
+  })  
+  
+  output$research_explanation <- renderUI({
+    HTML("
+    <p>This research project investigates the financial performance and investment potential of the U.S. nursing home industry, using a near-complete dataset (2015–2021) from the U.S. Department of Health and Human Services.</p>
+    <ul>
+      <li>The dataset covers over 95% of all licensed nursing home providers, offering a robust foundation for industry-wide analysis.</li>
+      <li>Our primary objective is to assess whether this sector presents a viable opportunity for investment by examining key operational and financial metrics.</li>
+      <li>The scope of this project includes national and state-level trend analysis, ownership structure comparisons, and forecasting net income using a fixed effects regression model.</li>
+      <li>While we identified fixed effects as a theoretically sound model for handling panel data, our implementation showed high residual variance, suggesting room for model refinement in future research. Ideas we plan to explore in subsequent iterations include testing alternative predictor variables, exploring different dependent variables (e.g., margin or ROI), and incorporating external economic indicators.</li>
+   </ul>
+    <p>This research was conducted by <a href = 'https://www.linkedin.com/in/minhnbnguyen/' target = '_blank'> Minh Nguyen</a> and <a href = 'https://www.linkedin.com/in/gianghdo/' target = '_blank'> Zoey Do </a>under the mentorship of <a href ='https://www.linkedin.com/in/john-brosius/' target = '_blank'> John Brosius</a>.</p>
+  ")
+  })
+
+  output$industry_table <- renderTable({
+    filtered_year() %>%
+      mutate(
+        restot = as.numeric(restot),
+        tot_penlty_cnt = as.numeric(tot_penlty_cnt),
+        total_days_total_annualized = as.numeric(total_days_total_annualized),
+        total_bed_days_available_annualized = as.numeric(total_bed_days_available_annualized),
+        overall_rating = as.numeric(overall_rating),
+        
+        occupancy_rate = case_when(
+          is.na(total_bed_days_available_annualized) |
+            total_bed_days_available_annualized == 0 ~ NA_real_,
+          TRUE ~ total_days_total_annualized/total_bed_days_available_annualized * 100
+        )
+      ) %>%
+      summarise(
+        Total_Providers = comma(as.integer(n_distinct(provnum, na.rm = TRUE))),
+        Residents_per_Day = comma(as.integer(sum(restot, na.rm = TRUE))),
+        Total_Penalty = comma(as.integer(sum(tot_penlty_cnt, na.rm = TRUE))),
+        Avg_Rating = mean(overall_rating, na.rm = TRUE),
+        
+        Occupancy_Rate = case_when(
+          all(is.na(occupancy_rate)) ~ "N/A",
+          TRUE ~ paste0(round(mean(occupancy_rate, na.rm = TRUE), 2), "%")
+        )
+      )
+  })
+  
