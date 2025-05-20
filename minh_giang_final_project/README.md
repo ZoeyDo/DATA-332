@@ -226,7 +226,7 @@ provider_info_final <- nursing_merge
 
 save(provider_info_final, file = "provider_info_final.rda")
 write.csv(provider_info_final, file = "provider_info_final.csv", row.names = FALSE)
-
+```
 ---
 
 ## 🧹 Shinyapp Snippet
