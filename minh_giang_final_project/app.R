@@ -7,6 +7,7 @@ library(ggplot2)
 library(tidyr)
 library(DT)
 library(scales)
+#install.packages(c("maps", "mapproj", "viridis"))
 library(maps)
 library(mapproj)
 library(viridis)
@@ -27,23 +28,23 @@ ui <- navbarPage("Nursing Home Industry Research",
                             align-items: center;
                             margin-top: 20px;}"))
                             ),
-                            tags$figure(
-                              class = "centerFigure",
-                              tags$img(
-                                src = "nursing.jpg",
-                                width = 500,
-                                alt = "Nursing Home Animation"
+                              tags$figure(
+                                class = "centerFigure",
+                                tags$img(
+                                  src = "nursing.jpg",
+                                  width = 500,
+                                  alt = "Nursing Home Animation"
+                                )
+                                )
+                            ),
+                            fluidRow(
+                              h4("Research Explanation"),
+                              div(
+                                style = "border: 1px solid #ddd; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto;",
+                                htmlOutput("research_explanation")
                               )
                             )
                           ),
-                          fluidRow(
-                            h4("Research Explanation"),
-                            div(
-                              style = "border: 1px solid #ddd; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto;",
-                              htmlOutput("research_explanation")
-                            )
-                          )
-                 ),
                  tabPanel("Industry Overview",
                           fluidPage(
                             fluidRow(
@@ -55,8 +56,8 @@ ui <- navbarPage("Nursing Home Industry Research",
                             fluidRow(
                               column(12,
                                      wellPanel(
-                                       selectInput("selected_year", "Year:",
-                                                   choices = c("All", unique(as.character(dataset$year))),
+                                       selectInput("selected_year", "Year:", 
+                                                   choices = c("All", unique(as.character(dataset$year))), 
                                                    selected = "All")
                                      )
                               )
@@ -82,11 +83,11 @@ ui <- navbarPage("Nursing Home Industry Research",
                               )
                             ),
                             fluidRow(
-                              h4("Industry Overview Explanations"),
-                              div(
-                                style = "border: 1px solid #ddd; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto;",
-                                htmlOutput("industry_comments")
-                              )
+                                     h4("Industry Overview Explanations"),
+                                     div(
+                                       style = "border: 1px solid #ddd; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto;",
+                                       htmlOutput("industry_comments")
+                                     )
                             )
                           )
                  ),
@@ -102,7 +103,7 @@ ui <- navbarPage("Nursing Home Industry Research",
                             fluidRow(
                               column(12,
                                      wellPanel(
-                                       selectInput("selected_state", "State:",
+                                       selectInput("selected_state", "State:", 
                                                    choices = c("All", dataset %>%
                                                                  filter(!is.na(state) & state != "NA") %>%
                                                                  pull(state) %>%
@@ -164,11 +165,6 @@ ui <- navbarPage("Nursing Home Industry Research",
 # Server
 server <- function(input, output, tab) {
   
-  #filtered_data <- reactive({
-  # dataset %>%
-  #  filter(as.character(state) == input$selected_state)
-  #})
-  
   filtered_data <- reactive({
     if(input$selected_state == "All") {
       dataset
@@ -211,7 +207,7 @@ server <- function(input, output, tab) {
         
         # Add safety check for division by zero
         occupancy_rate = case_when(
-          is.na(total_bed_days_available_annualized) |
+          is.na(total_bed_days_available_annualized) | 
             total_bed_days_available_annualized == 0 ~ NA_real_,
           TRUE ~ total_days_total_annualized/total_bed_days_available_annualized * 100
         )
@@ -233,7 +229,7 @@ server <- function(input, output, tab) {
   output$occupancy_ownership <- renderPlot({
     filtered_year() %>%
       # First, filter out rows with missing or zero values that would cause issues
-      filter(!is.na(total_days_total_annualized),
+      filter(!is.na(total_days_total_annualized), 
              !is.na(total_bed_days_available_annualized),
              total_bed_days_available_annualized > 0) %>%
       mutate(
@@ -253,7 +249,7 @@ server <- function(input, output, tab) {
         )
       ) %>%
       # Remove any NA ownership groups and any invalid occupancy rates
-      filter(!is.na(ownership_grouped),
+      filter(!is.na(ownership_grouped), 
              !is.na(occupancy_rate),
              occupancy_rate >= 0,
              occupancy_rate <= 100) %>%
@@ -295,7 +291,7 @@ server <- function(input, output, tab) {
       ) %>%
       ggplot(aes(x = ownership_grouped, y = avg_rating)) +
       geom_bar(stat = 'identity', fill = "dodgerblue") +
-      coord_flip() +
+      coord_flip() + 
       labs(
         title = NULL,
         x = NULL,
@@ -331,7 +327,7 @@ server <- function(input, output, tab) {
     
     # Check if there's data to plot
     if(nrow(provider_counts) == 0) {
-      return(ggplot() +
+      return(ggplot() + 
                geom_blank() +
                labs(title = "No data available for the selected year") +
                theme_minimal())
@@ -346,7 +342,7 @@ server <- function(input, output, tab) {
     )
     
     # Check if states are 2-letter codes safely
-    if(all(!is.na(provider_counts$state)) &&
+    if(all(!is.na(provider_counts$state)) && 
        all(nchar(as.character(provider_counts$state)) == 2)) {
       provider_counts <- provider_counts %>%
         left_join(state_lookup, by = c("state" = "state_abbr")) %>%
@@ -403,7 +399,7 @@ server <- function(input, output, tab) {
     
     # Check if there's data to plot
     if(nrow(income_by_state) == 0) {
-      return(ggplot() +
+      return(ggplot() + 
                geom_blank() +
                labs(title = "No data available for the selected year") +
                theme_minimal())
@@ -420,7 +416,7 @@ server <- function(input, output, tab) {
     )
     
     # Join income data with state names - handle potential NAs or factors
-    if(all(!is.na(income_by_state$state)) &&
+    if(all(!is.na(income_by_state$state)) && 
        all(nchar(as.character(income_by_state$state)) == 2)) {
       # If your data uses state abbreviations
       income_by_state <- income_by_state %>%
@@ -453,7 +449,7 @@ server <- function(input, output, tab) {
       ) +
       labs(
         title = NULL,
-        subtitle = "Values in Millions of Dollars",
+        subtitle = "Values in Millions of Dollars", 
         x = "",
         y = ""
       ) +
@@ -471,7 +467,7 @@ server <- function(input, output, tab) {
     # Reshape the data from wide to long format
     long_data <- filtered_data() %>%
       select(year, gross_revenue_annualized, less_total_operating_expense_annualized) %>%
-      rename(Revenue = gross_revenue_annualized,
+      rename(Revenue = gross_revenue_annualized, 
              Expense = less_total_operating_expense_annualized) %>%
       pivot_longer(
         cols = c(Revenue, Expense),
@@ -507,7 +503,7 @@ server <- function(input, output, tab) {
     # Reshape the data from wide to long format
     long_data <- aggregated_data %>%
       select(year, total_income_annualized, net_income_from_patients_annualized) %>%
-      rename(Total_Income = total_income_annualized,
+      rename(Total_Income = total_income_annualized, 
              Operating_Income = net_income_from_patients_annualized
       ) %>%
       pivot_longer(
@@ -654,17 +650,21 @@ server <- function(input, output, tab) {
   # Tab 3: Forecasting
   output$forecasting_comments <- renderUI({
     HTML("
-    <p><strong>We used ChatGPT to give us a forecasting model. It suggested Fixed Effects based on the reasons below:</strong></p>
+    <p><strong>We used ChatGPT to give us some forecasting models. Based on its suggestion and other evaluations, we decided to use the Fixed Effects based on the reasons below:</strong></p>
     <ul>
       <li>Controls for unobserved, time-invariant characteristics unique to each nursing home.</li>
       <li>Focuses on within-entity variation to assess the impact of time-varying factors.</li>
       <li>Reduces omitted variable bias by accounting for constant factors over time.</li>
       <li>Widely adopted in health economics research for analyzing panel data.</li>
     </ul>
-    <p>Moreover, we also found a that used Fixed Effects Regression Analysis to find the correlation between quality and operating margin </p>
+    <p>Moreover, we also found a research that used Fixed Effects Regression Analysis to find the correlation between quality and operating margin </p>
     <p>Weech-Maldonado, R., Pradhan, R., Dayama, N., Lord, J., & Gupta, S. (2019). Nursing Home Quality and Financial Performance: Is There a Business Case for Quality?. Inquiry : a journal of medical care organization, provision and financing, 56, 46958018825191. <a href='https://pmc.ncbi.nlm.nih.gov/articles/PMC6376502/' target='_blank'>https://pmc.ncbi.nlm.nih.gov/articles/PMC6376502/</a></p>
     <p>However, when we run this model to predict the future income based on the rural/urban, overall rating, ownership type, hospital status -> the standard residuals is quite large. Thus it's not very useful to predict income based on these variables. We can consider choosing other x variables or change the y variable. However, that's not in the scope of this project. We will work on it in later research</p>
-
+    <p>Other models that AI sugggested: </p>
+    <ul>
+      <li>Random Effects Model: Assumes provider effects are uncorrelated with other predictors. -> reject since we assume the net income correlated with other predictors.</li>
+      <li>Arellano-Bond (Dynamic Panel Model): Incorporates lagged income as a predictor to model dynamics. -> Only good for short panel data so we don't use it.</li>
+    </ul>
   ")
   })
   
@@ -682,14 +682,14 @@ server <- function(input, output, tab) {
         year_num = as.numeric(as.character(year))
       ) %>%
       # Remove any rows with NA in critical variables
-      filter(!is.na(rural_versus_urban),
-             !is.na(ownership),
-             !is.na(inhosp),
+      filter(!is.na(rural_versus_urban), 
+             !is.na(ownership), 
+             !is.na(inhosp), 
              !is.na(overall_rating),
              !is.na(total_income_annualized))
     
     # Build fixed effects model
-    fe_model <- lm(total_income_annualized ~ overall_rating + rural_versus_urban +
+    fe_model <- lm(total_income_annualized ~ overall_rating + rural_versus_urban + 
                      ownership + inhosp + year_num, data = model_data)
     
     # Create prediction data for future years
@@ -722,9 +722,9 @@ server <- function(input, output, tab) {
       group_by(year_num) %>%
       summarize(
         mean_predicted = mean(predicted_income, na.rm = TRUE),
-        lower_ci = mean_predicted - qt(0.975, df = df.residual(fe_model)) *
+        lower_ci = mean_predicted - qt(0.975, df = df.residual(fe_model)) * 
           sigma(fe_model)/sqrt(n()),
-        upper_ci = mean_predicted + qt(0.975, df = df.residual(fe_model)) *
+        upper_ci = mean_predicted + qt(0.975, df = df.residual(fe_model)) * 
           sigma(fe_model)/sqrt(n()),
         .groups = 'drop'
       )
@@ -736,17 +736,17 @@ server <- function(input, output, tab) {
     # Create plot
     ggplot() +
       # Historical data points
-      geom_point(data = historical_data,
-                 aes(x = year_num, y = mean_income, color = "Historical"),
+      geom_point(data = historical_data, 
+                 aes(x = year_num, y = mean_income, color = "Historical"), 
                  size = 3) +
       # Forecast line
       geom_line(data = forecast_summary,
-                aes(x = year_num, y = mean_predicted, color = "Forecast"),
+                aes(x = year_num, y = mean_predicted, color = "Forecast"), 
                 size = 1.2) +
       # Confidence interval ribbon
       geom_ribbon(data = forecast_summary,
-                  aes(x = year_num,
-                      ymin = lower_ci,
+                  aes(x = year_num, 
+                      ymin = lower_ci, 
                       ymax = upper_ci),
                   fill = "blue", alpha = 0.2) +
       # Add year labels
@@ -781,14 +781,14 @@ server <- function(input, output, tab) {
         overall_rating = factor(overall_rating, ordered = TRUE),
         year_num = as.numeric(as.character(year))
       ) %>%
-      filter(!is.na(rural_versus_urban),
-             !is.na(ownership),
-             !is.na(inhosp),
+      filter(!is.na(rural_versus_urban), 
+             !is.na(ownership), 
+             !is.na(inhosp), 
              !is.na(overall_rating),
              !is.na(total_income_annualized))
     
     # Build fixed effects model
-    fe_model <- lm(total_income_annualized ~ overall_rating + rural_versus_urban +
+    fe_model <- lm(total_income_annualized ~ overall_rating + rural_versus_urban + 
                      ownership + inhosp + year_num, data = model_data)
     
     # Get model summary
@@ -796,18 +796,18 @@ server <- function(input, output, tab) {
     
     # Create metrics table
     tibble(
-      Metric = c("Adjusted R²",
-                 "F-statistic",
-                 "p-value",
+      Metric = c("Adjusted R²", 
+                 "F-statistic", 
+                 "p-value", 
                  "Residual Std Error",
                  "Degrees of Freedom",
                  "Sample Size"),
       Value = c(
         sprintf("%.4f", model_summary$adj.r.squared),
         sprintf("%.2f", model_summary$fstatistic[1]),
-        sprintf("%.4e", pf(model_summary$fstatistic[1],
-                           model_summary$fstatistic[2],
-                           model_summary$fstatistic[3],
+        sprintf("%.4e", pf(model_summary$fstatistic[1], 
+                           model_summary$fstatistic[2], 
+                           model_summary$fstatistic[3], 
                            lower.tail = FALSE)),
         sprintf("%.2f", model_summary$sigma),
         sprintf("%d", model_summary$df[2]),
