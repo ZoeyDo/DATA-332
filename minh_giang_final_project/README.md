@@ -13,6 +13,7 @@ Due to the large size of the files, all data is hosted externally:
 ---
 
 ## 🧹 Data Cleaning Snippet
+```r
 library(readr)
 library(dplyr)
 library(lubridate)
@@ -229,6 +230,7 @@ write.csv(provider_info_final, file = "provider_info_final.csv", row.names = FAL
 ---
 
 ## 🧹 Shinyapp Snippet
+```r
 library(readr)
 library(dplyr)
 library(lubridate)
