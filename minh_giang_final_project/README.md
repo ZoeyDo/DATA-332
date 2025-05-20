@@ -2,6 +2,7 @@
 
 This project explores trends in the U.S. nursing home industry from 2015 to 2021. It involves cleaning and consolidating large datasets and visualizing insights through an interactive Shiny dashboard.
 
+[Interact with our Shiny App here](https://minhnguyen22.shinyapps.io/Final/)
 ---
 
 ## 📂 Data Access
@@ -379,11 +380,6 @@ ui <- navbarPage("Nursing Home Industry Research",
 )
 
 server <- function(input, output, tab) {
-  
-  #filtered_data <- reactive({
-  # dataset %>%
-  #  filter(as.character(state) == input$selected_state)
-  #})
   
   filtered_data <- reactive({
     if(input$selected_state == "All") {
