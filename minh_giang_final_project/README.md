@@ -231,88 +231,149 @@ write.csv(provider_info_final, file = "provider_info_final.csv", row.names = FAL
 
 ## 🧹 Shinyapp Snippet
 ```r
-library(readr)
-library(dplyr)
-library(lubridate)
-
-read_csv_with_encodings <- function(file_path) {
-  encodings <- c("UTF-8", "latin1", "ISO-8859-1", "CP1252", "UTF-16", "UTF-32")
-  for (enc in encodings) {
-    tryCatch({
-      df <- read.csv(file_path, encoding = enc, stringsAsFactors = FALSE)
-      return(df)
-    }, error = function(e) {})
-  }
-  return(NULL)
-}
-
-create_provider_info_tables <- function(raw_provider_info) {
-  tables <- list()
-  for (key in names(raw_provider_info)) {
-    df <- raw_provider_info[[key]]
-    year <- tail(strsplit(key, "_")[[1]], 1)
-    cols_to_keep <- c('provnum', 'provname', 'address', 'city', 'state', 'zip', 'phone', 'ownership', 'year')
-    valid_cols <- intersect(cols_to_keep, colnames(df))
-    tables[[paste0('provider_basic_', year)]] <- df[, valid_cols, drop = FALSE]
-  }
-  return(tables)
-}
-
-fill_missing_provider_info <- function(df) {
-  provider_cols <- c('provnum', 'provname', 'address', 'city', 'state', 'zip', 'phone', 'ownership')
-  provider_cols <- intersect(provider_cols, colnames(df))
-  provider_details <- list()
-
-  is_missing <- function(x) {
-    x <- iconv(as.character(x), from = "UTF-8", to = "UTF-8", sub = "")
-    is.na(x) || x == "" || tolower(x) == "nan"
-  }
-
-  for (i in seq_len(nrow(df))) {
-    provnum <- df$provnum[i]
-    if (!is.na(provnum) && provnum != '') {
-      details <- list()
-      for (col in provider_cols) {
-        if (!is_missing(df[i, col])) {
-          details[[col]] <- df[i, col]
-        }
-      }
-      if (!(provnum %in% names(provider_details)) || length(details) > length(provider_details[[provnum]])) {
-        provider_details[[provnum]] <- details
-      }
-    }
-  }
-
-  for (i in seq_len(nrow(df))) {
-    provnum <- df$provnum[i]
-    if (!is.na(provnum) && provnum != '' && provnum %in% names(provider_details)) {
-      for (col in provider_cols) {
-        if (is_missing(df[i, col]) && col %in% names(provider_details[[provnum]])) {
-          df[i, col] <- provider_details[[provnum]][[col]]
-        }
-      }
-    }
-  }
-  return(df)
-}
-
-library(shiny)
-library(leaflet)
-library(dplyr)
-library(lubridate)
-library(readr)
-library(ggplot2)
-library(tidyr)
-library(DT)
-library(scales)
-library(maps)
-library(mapproj)
-library(viridis)
-
-dataset <- readRDS("cleaned_nursing.rds")
-
-ui <- navbarPage("Nursing Home Industry Research")
-
-server <- function(input, output, session) {}
-
-shinyApp(ui = ui, server = server)
+ui <- navbarPage("Nursing Home Industry Research",
+                 tabPanel("Research Overview",
+                          fluidPage(
+                            fluidRow(
+                              h3("NURSING HOME INDUSTRY RESEARCH", align = "Center"),
+                              tags$style(HTML("
+                            .centerFigure {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            margin-top: 20px;}"))
+                            ),
+                            tags$figure(
+                              class = "centerFigure",
+                              tags$img(
+                                src = "nursing.jpg",
+                                width = 500,
+                                alt = "Nursing Home Animation"
+                              )
+                            )
+                          ),
+                          fluidRow(
+                            h4("Research Explanation"),
+                            div(
+                              style = "border: 1px solid #ddd; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto;",
+                              htmlOutput("research_explanation")
+                            )
+                          )
+                 ),
+                 tabPanel("Industry Overview",
+                          fluidPage(
+                            fluidRow(
+                              column(12,
+                                     h4("Industry KPI"),
+                                     tableOutput("industry_table")
+                              )
+                            ),
+                            fluidRow(
+                              column(12,
+                                     wellPanel(
+                                       selectInput("selected_year", "Year:",
+                                                   choices = c("All", unique(as.character(dataset$year))),
+                                                   selected = "All")
+                                     )
+                              )
+                            ),
+                            fluidRow(
+                              column(6,
+                                     h4("Occupancy Rate by Ownership Type"),
+                                     plotOutput("occupancy_ownership", height = "100px")
+                              ),
+                              column(6,
+                                     h4("Rating by Ownership Type"),
+                                     plotOutput("rating_ownership", height = "100px")
+                              )
+                            ),
+                            fluidRow(
+                              column(6,
+                                     h4("Number of Providers by State"),
+                                     plotOutput("provider_state", height = "300px")
+                              ),
+                              column(6,
+                                     h4("Net Income by State"),
+                                     plotOutput("net_income_state", height = "300px")
+                              )
+                            ),
+                            fluidRow(
+                              h4("Industry Overview Explanations"),
+                              div(
+                                style = "border: 1px solid #ddd; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto;",
+                                htmlOutput("industry_comments")
+                              )
+                            )
+                          )
+                 ),
+                 tabPanel("Financial Performance",
+                          fluidPage(
+                            # Financial KPI table at the top
+                            fluidRow(
+                              column(12,
+                                     h4("Financial KPI (2015-2021)"),
+                                     tableOutput("financial_table")
+                              )
+                            ),
+                            fluidRow(
+                              column(12,
+                                     wellPanel(
+                                       selectInput("selected_state", "State:",
+                                                   choices = c("All", dataset %>%
+                                                                 filter(!is.na(state) & state != "NA") %>%
+                                                                 pull(state) %>%
+                                                                 as.character() %>%
+                                                                 unique() %>%
+                                                                 sort()),
+                                                   selected = "All")
+                                     )
+                              )
+                            ),
+                            
+                            # Income growth rate and income structure side by side
+                            fluidRow(
+                              column(6,
+                                     h4("Income Growth Rate"),
+                                     plotOutput("income_growth", height = "300px")
+                              ),
+                              column(6,
+                                     h4("Total Income vs. Operations Income"),
+                                     plotOutput("income_structure", height = "300px")
+                              )
+                            ),
+                            
+                            # Revenue vs cost and analytics insights side by side
+                            fluidRow(
+                              column(6,
+                                     h4("Revenue vs. Cost"),
+                                     plotOutput("revenue_vs_cost", height = "300px")
+                              ),
+                              column(6,
+                                     h4("Financial Explanations"),
+                                     div(
+                                       style = "border: 1px solid #ddd; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto;",
+                                       htmlOutput("financial_comments")
+                                     )
+                              )
+                            )
+                          )
+                 ),
+                 tabPanel("Predicted Income",
+                          fluidPage(
+                            fluidRow(
+                              column(9,
+                                     h4("Industry Net Income Forecast with Fixed Effects"),
+                                     plotOutput("income_forecast_plot")),
+                              column(3,
+                                     tableOutput("model_metrics"))
+                            ),
+                            fluidRow(
+                              h4("Forecasting Explanations"),
+                              div(
+                                style = "border: 1px solid #ddd; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto;",
+                                htmlOutput("forecasting_comments")
+                              )
+                            )
+                          )
+                 )
+)
